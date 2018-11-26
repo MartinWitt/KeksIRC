@@ -31,6 +31,9 @@ public class Connector {
         if (socket == null) {
             throw new IOException("cant connect SSL status:" + ssl);
         }
+        this.out = socket.getOutputStream();
+        this.in = socket.getInputStream();
+
     }
 
     private void createNonSSLSocket(String host, int port) {
@@ -45,14 +48,22 @@ public class Connector {
 
     private void createSSLSocket(String host, int port) {
         try {
-            SocketFactory sslsocketfactory = SSLSocketFactory.getDefault();
-            socket = (SSLSocket) sslsocketfactory.createSocket(host, port);
+            socket = SSLSocketFactory.getDefault().createSocket(host, port);
+            System.out.println(((SSLSocket) socket).getHandshakeApplicationProtocol());
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
 
         }
 
+    }
+
+    public OutputStream getOut() {
+        return this.out;
+    }
+
+    public InputStream getIn() {
+        return this.in;
     }
 
 }
