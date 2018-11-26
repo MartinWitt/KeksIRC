@@ -49,3 +49,4 @@ settings.gradle
 .project
 gradle/wrapper/gradle-wrapper.properties
 gradle/wrapper/gradle-wrapper.jar
+.vscode/launch.test.json

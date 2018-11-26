@@ -4,3 +4,59 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds/
  */
+
+plugins {
+    id 'java'
+    id 'application'
+
+    
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+// Define the main class for the application
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+targetCompatibility = '10'
+sourceCompatibility = '10'
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+
+
+
+
+test {
+    testLogging {
+        // Make sure output from
+        // standard out or error is shown
+        // in Gradle output.
+        showStandardStreams = true
+     }
+}
+
+
+mainClassName = 'keksdose.keksIrc.Main'
+jar {
+    manifest {
+        attributes 'Main-Class' : 'keksdose.keksIrc.Main'
+    }
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA' 
+}
+
+
