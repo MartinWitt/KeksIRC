@@ -35,10 +35,10 @@ public class Main {
                         continue;
                     }
                     if (m.getType().equals("PING")) {
-                        m.answer("");
+                        s.sendMessage(m.answer(""));
                     } else {
-                        if (m.getContent().startsWith("#echo") && m.getContent().length() > 4) {
-                            m.answer(m.getContent().substring(5));
+                        if (m.getContent().startsWith("#echo") && m.getContent().length() > 5) {
+                            s.sendMessage(m.answer(m.getContent().substring(6)));
                         }
                     }
                 }
