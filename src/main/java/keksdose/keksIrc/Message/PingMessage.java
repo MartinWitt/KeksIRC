@@ -37,7 +37,7 @@ public class PingMessage implements Message {
 
     @Override
     public String answer(String content) {
-        return this.content + Strings.newLine.getContent();
+        return "PONG " + this.content + Strings.newLine.getContent();
     }
 
 }
