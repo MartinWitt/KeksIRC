@@ -10,6 +10,7 @@ import keksdose.keksIrc.Actions.UserHost;
 import keksdose.keksIrc.Helper.Strings;
 import keksdose.keksIrc.Message.Message;
 import keksdose.keksIrc.Modell.User;
+import keksdose.keksIrc.Network.CapHandler;
 import keksdose.keksIrc.Network.Connector;
 import keksdose.keksIrc.Network.SocketHandler;
 
@@ -32,6 +33,7 @@ public class IRCStart {
 
     public void start() throws IOException {
         MessageParser parser = new MessageParser();
+        CapHandler cap = new CapHandler();
         int port = 7000; // 6667 non ssl 7000 ssl
         String host = "chat.freenode.net";
         Connector c = new Connector(useSSL);
@@ -58,6 +60,9 @@ public class IRCStart {
                 list.add(m);
                 if (m.getType().equals("PRIVMSG")) {
                     if (m.getContent().startsWith("#echo") && m.getContent().length() > 5) {
+                        if (useCapHandler) {
+                            cap.waitForNext();
+                        }
                         s.sendMessage(m.answer(m.getContent().substring(6)));
                     }
                 }

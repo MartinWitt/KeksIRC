@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) {
         ArrayBlockingQueue<Message> list = new ArrayBlockingQueue<>(100);
         var start = new IRCStart(list);
+        start.useCapHandler(true);
         try {
             start.start();
         } catch (IOException e) {
