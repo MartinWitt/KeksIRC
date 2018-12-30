@@ -21,8 +21,8 @@ public class IRCStart {
     private boolean useCapHandler = true;
     private int port = 7000;
     private String hostname = "FWKIB";
-    private String username = "testkeks";
-    private String nickname = "testkeks";
+    private String username = "FWKIB";
+    private String nickname = "FWKIB";
     private String channel = "#kitinfo-botnet";
     private String prefix = Strings.zwnbsp.getContent();
     private ArrayBlockingQueue<Message> list;

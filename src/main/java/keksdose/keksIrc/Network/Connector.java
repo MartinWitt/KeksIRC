@@ -48,7 +48,7 @@ public class Connector {
     private void createSSLSocket(String host, int port) {
         try {
             socket = SSLSocketFactory.getDefault().createSocket(host, port);
-            System.out.println(((SSLSocket) socket).getHandshakeApplicationProtocol());
+            // System.out.println(((SSLSocket) socket).getHandshakeApplicationProtocol());
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

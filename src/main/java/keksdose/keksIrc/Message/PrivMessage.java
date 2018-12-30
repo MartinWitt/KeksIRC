@@ -37,8 +37,9 @@ public class PrivMessage implements Message {
     }
 
     public String answer(String content) {
-        return "PRIVMSG " + this.getChannel() + " :" + Strings.zwnbsp.getContent() + content
-                + Strings.newLine.getContent();
+        return "PRIVMSG " + this.getChannel() + " :" + Strings.zwnbsp.getContent() + "\uD83E\uDD14"
+
+                + content + Strings.newLine.getContent();
     }
 
 }

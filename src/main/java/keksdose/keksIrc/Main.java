@@ -11,6 +11,7 @@ public class Main {
         ArrayBlockingQueue<Message> list = new ArrayBlockingQueue<>(100);
         var start = new IRCStart(list);
         start.useCapHandler(true);
+        start.setNickname("FWKIB|Test");
         try {
             start.start();
         } catch (IOException e) {
