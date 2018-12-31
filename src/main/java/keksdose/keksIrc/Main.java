@@ -10,8 +10,10 @@ public class Main {
     public static void main(String[] args) {
         ArrayBlockingQueue<Message> list = new ArrayBlockingQueue<>(100);
         var start = new IRCStart(list);
-        start.useCapHandler(true);
+        start.setCapHandler(true);
         start.setNickname("FWKIB|Test");
+        start.addChannel("#kitinfo-botnet");
+        start.addChannel("#kitinfo");
         try {
             start.start();
         } catch (IOException e) {

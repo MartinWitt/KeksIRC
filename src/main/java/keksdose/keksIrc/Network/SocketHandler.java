@@ -15,9 +15,24 @@ public class SocketHandler {
     private ArrayBlockingQueue<String> messages;
     private BufferedWriter out;
     private BufferedReader in;
+    private CapHandler cap;
 
     public SocketHandler(Connector c) {
         messages = new ArrayBlockingQueue<>(100);
+        try {
+            out = new BufferedWriter(new OutputStreamWriter(c.getOut(), "UTF-8"));
+            in = new BufferedReader(new InputStreamReader(c.getIn(), "UTF-8"));
+
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        read();
+    }
+
+    public SocketHandler(Connector c, CapHandler cap) {
+        messages = new ArrayBlockingQueue<>(100);
+        this.cap = cap;
         try {
             out = new BufferedWriter(new OutputStreamWriter(c.getOut(), "UTF-8"));
             in = new BufferedReader(new InputStreamReader(c.getIn(), "UTF-8"));
@@ -39,6 +54,7 @@ public class SocketHandler {
                         String var = in.readLine();
 
                         messages.put(var);
+                        notifyAll();
                     } catch (IOException | InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -51,6 +67,9 @@ public class SocketHandler {
     }
 
     public void sendMessage(String message) {
+        if (cap != null) {
+            cap.waitForNext();
+        }
         try {
             out.write(message);
             out.flush();

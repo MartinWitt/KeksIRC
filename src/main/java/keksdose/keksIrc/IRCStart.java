@@ -1,6 +1,8 @@
 package keksdose.keksIrc;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -23,7 +25,7 @@ public class IRCStart {
     private String hostname = "FWKIB";
     private String username = "FWKIB";
     private String nickname = "FWKIB";
-    private String channel = "#kitinfo-botnet";
+    private List<String> channel = new LinkedList<>();
     private String prefix = Strings.zwnbsp.getContent();
     private ArrayBlockingQueue<Message> list;
 
@@ -32,7 +34,6 @@ public class IRCStart {
     }
 
     public void start() throws IOException {
-        MessageParser parser = new MessageParser();
         CapHandler cap = new CapHandler();
         int port = 7000; // 6667 non ssl 7000 ssl
         String host = "chat.freenode.net";
@@ -40,11 +41,14 @@ public class IRCStart {
         User u = new User(hostname, username, nickname);
         c.connect(host, port);
         System.out.println("connected with socket");
-        SocketHandler s = new SocketHandler(c);
+        SocketHandler s = new SocketHandler(c, cap);
         System.out.println("created streams");
+        MessageParser parser = new MessageParser(s);
         s.sendMessage(Nick.NickAction(u.getNickname()));
         s.sendMessage(UserHost.UserHost(u.getHostname(), u.getUsername()));
-        s.sendMessage(Join.JoinAction(channel));
+        for (String var : channel) {
+            s.sendMessage(Join.JoinAction(var));
+        }
         // TODO MULTICHANNEL
         while (true) {
             if (s.hasNext()) {
@@ -65,6 +69,14 @@ public class IRCStart {
                         }
                         s.sendMessage(m.answer(m.getContent().substring(6)));
                     }
+                }
+
+            } else {
+                try {
+                    s.wait();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
 
             }
@@ -140,12 +152,8 @@ public class IRCStart {
         this.nickname = nickname;
     }
 
-    public String getChannel() {
-        return this.channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void addChannel(String channel) {
+        this.channel.add(channel);
     }
 
     public String getPrefix() {
@@ -156,49 +164,8 @@ public class IRCStart {
         this.prefix = prefix;
     }
 
-    public IRCStart useSSL(boolean useSSL) {
-        this.useSSL = useSSL;
-        return this;
-    }
-
-    public IRCStart usePrefix(boolean usePrefix) {
-        this.usePrefix = usePrefix;
-        return this;
-    }
-
-    public IRCStart useCapHandler(boolean useCapHandler) {
-        this.useCapHandler = useCapHandler;
-        return this;
-    }
-
-    public IRCStart port(int port) {
-        this.port = port;
-        return this;
-    }
-
-    public IRCStart hostname(String hostname) {
-        this.hostname = hostname;
-        return this;
-    }
-
-    public IRCStart username(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public IRCStart nickname(String nickname) {
-        this.nickname = nickname;
-        return this;
-    }
-
-    public IRCStart channel(String channel) {
-        this.channel = channel;
-        return this;
-    }
-
-    public IRCStart prefix(String prefix) {
-        this.prefix = prefix;
-        return this;
+    public void setCapHandler(boolean var) {
+        useCapHandler = var;
     }
 
     @Override
@@ -212,20 +179,20 @@ public class IRCStart {
         return useSSL == iRCStart.useSSL && usePrefix == iRCStart.usePrefix && useCapHandler == iRCStart.useCapHandler
                 && port == iRCStart.port && Objects.equals(hostname, iRCStart.hostname)
                 && Objects.equals(username, iRCStart.username) && Objects.equals(nickname, iRCStart.nickname)
-                && Objects.equals(channel, iRCStart.channel) && Objects.equals(prefix, iRCStart.prefix);
+                && Objects.equals(prefix, iRCStart.prefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(useSSL, usePrefix, useCapHandler, port, hostname, username, nickname, channel, prefix);
+        return Objects.hash(useSSL, usePrefix, useCapHandler, port, hostname, username, nickname, prefix);
     }
 
     @Override
     public String toString() {
         return "{" + " useSSL='" + isUseSSL() + "'" + ", usePrefix='" + isUsePrefix() + "'" + ", useCapHandler='"
                 + isUseCapHandler() + "'" + ", port='" + getPort() + "'" + ", hostname='" + getHostname() + "'"
-                + ", username='" + getUsername() + "'" + ", nickname='" + getNickname() + "'" + ", channel='"
-                + getChannel() + "'" + ", prefix='" + getPrefix() + "'" + "}";
+                + ", username='" + getUsername() + "'" + ", nickname='" + getNickname() + "'" + "'" + ", prefix='"
+                + getPrefix() + "'" + "}";
     }
 
 }

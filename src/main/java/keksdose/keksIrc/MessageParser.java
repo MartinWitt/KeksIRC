@@ -1,14 +1,21 @@
 package keksdose.keksIrc;
 
-import keksdose.keksIrc.Helper.Strings;
 import keksdose.keksIrc.Message.Message;
+import keksdose.keksIrc.Network.SocketHandler;
 import keksdose.keksIrc.Parser.Parser;
 import keksdose.keksIrc.Parser.PingMessageParser;
 import keksdose.keksIrc.Parser.PrivMessageParser;
 
 public class MessageParser {
-    private Parser privParser = new PrivMessageParser();
-    private Parser pingParser = new PingMessageParser();
+    private Parser privParser;
+    private Parser pingParser;
+    private SocketHandler s;
+
+    public MessageParser(SocketHandler s) {
+        this.s = s;
+        pingParser = new PingMessageParser();
+        privParser = new PrivMessageParser(s);
+    }
 
     public Message parserMessage(String message) {
 
@@ -18,8 +25,6 @@ public class MessageParser {
         }
         if (message.contains("PRIVMSG")) {
             Message m = privParser.parse(message);
-            System.out.println("sende:  " + "PRIVMSG " + m.getChannel() + " :" + Strings.zwnbsp.getContent()
-                    + m.getContent() + Strings.newLine.getContent());
             return m;
         }
         return null;

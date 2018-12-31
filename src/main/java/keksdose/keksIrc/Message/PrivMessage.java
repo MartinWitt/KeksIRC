@@ -1,6 +1,7 @@
 package keksdose.keksIrc.Message;
 
 import keksdose.keksIrc.Helper.Strings;
+import keksdose.keksIrc.Network.SocketHandler;
 
 public class PrivMessage implements Message {
 
@@ -8,12 +9,14 @@ public class PrivMessage implements Message {
     private String channel;
     private String content;
     private String type = "PRIVMSG";
+    private SocketHandler handler;
 
-    public PrivMessage(String hostname, String channel, String content) {
+    public PrivMessage(String hostname, String channel, String content, SocketHandler handler) {
         super();
         this.hostname = hostname;
         this.channel = channel;
         this.content = content;
+        this.handler = handler;
     }
 
     @Override
@@ -37,9 +40,12 @@ public class PrivMessage implements Message {
     }
 
     public String answer(String content) {
-        return "PRIVMSG " + this.getChannel() + " :" + Strings.zwnbsp.getContent() + "\uD83E\uDD14"
+        String s = ("PRIVMSG " + this.getChannel() + " :" + Strings.zwnbsp.getContent()
 
-                + content + Strings.newLine.getContent();
+                + content + Strings.newLine.getContent());
+        handler.sendMessage(s);
+
+        return s;
     }
 
 }

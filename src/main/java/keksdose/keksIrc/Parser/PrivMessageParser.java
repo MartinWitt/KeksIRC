@@ -3,9 +3,15 @@ package keksdose.keksIrc.Parser;
 import java.util.Arrays;
 
 import keksdose.keksIrc.Message.Message;
-import keksdose.keksIrc.Message.PrivMessage;;
+import keksdose.keksIrc.Message.PrivMessage;
+import keksdose.keksIrc.Network.SocketHandler;;
 
 public class PrivMessageParser implements Parser {
+    private SocketHandler handler;
+
+    public PrivMessageParser(SocketHandler s) {
+        this.handler = s;
+    }
 
     @Override
     public Message parse(String input) {
@@ -15,7 +21,7 @@ public class PrivMessageParser implements Parser {
         }
         result[3] = result[3].substring(1);
         System.out.println(Arrays.toString(result));
-        return new PrivMessage(result[0], result[2], result[3]);
+        return new PrivMessage(result[0], result[2], result[3], handler);
         // todo: aufteilen des splits und dann nachricht erstellen.
     }
 
