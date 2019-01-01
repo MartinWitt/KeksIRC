@@ -12,7 +12,6 @@ public class PrivMessage implements Message {
     private SocketHandler handler;
 
     public PrivMessage(String hostname, String channel, String content, SocketHandler handler) {
-        super();
         this.hostname = hostname;
         this.channel = channel;
         this.content = content;

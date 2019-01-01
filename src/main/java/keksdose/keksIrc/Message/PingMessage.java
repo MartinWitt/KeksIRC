@@ -9,7 +9,6 @@ public class PingMessage implements Message {
     private String type = "PING";
 
     public PingMessage(String hostname, String channel, String content) {
-        super();
         this.hostname = hostname;
         this.channel = channel;
         this.content = content;

@@ -52,9 +52,7 @@ public class SocketHandler {
                 while (true) {
                     try {
                         String var = in.readLine();
-
                         messages.put(var);
-                        notifyAll();
                     } catch (IOException | InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -85,6 +83,13 @@ public class SocketHandler {
     }
 
     public String getNextMessage() {
-        return messages.poll();
+        try {
+            return messages.take();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+
     }
 }

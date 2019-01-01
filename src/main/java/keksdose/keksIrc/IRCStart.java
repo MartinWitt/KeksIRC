@@ -51,37 +51,25 @@ public class IRCStart {
         }
         // TODO MULTICHANNEL
         while (true) {
-            if (s.hasNext()) {
-                Message m = parser.parserMessage(s.getNextMessage());
-                if (m == null) {
-                    continue;
-                }
-
-                if (m.getType().equals("PING")) {
-                    s.sendMessage(m.answer(""));
-                    continue;
-                }
-                list.add(m);
-                if (m.getType().equals("PRIVMSG")) {
-                    if (m.getContent().startsWith("#echo") && m.getContent().length() > 5) {
-                        if (useCapHandler) {
-                            cap.waitForNext();
-                        }
-                        s.sendMessage(m.answer(m.getContent().substring(6)));
-                    }
-                }
-
-            } else {
-                try {
-                    s.wait();
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
+            Message m = parser.parserMessage(s.getNextMessage());
+            if (m == null) {
+                continue;
             }
-        }
+            if (m.getType().equals("PING")) {
+                s.sendMessage(m.answer(""));
+                continue;
+            }
+            list.add(m);
+            if (m.getType().equals("PRIVMSG")) {
+                if (m.getContent().startsWith("#echo") && m.getContent().length() > 5) {
+                    if (useCapHandler) {
+                        cap.waitForNext();
+                    }
+                    s.sendMessage(m.answer(m.getContent().substring(6)));
+                }
+            }
 
+        }
     }
 
     public boolean isUseSSL() {

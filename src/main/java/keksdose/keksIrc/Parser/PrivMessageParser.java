@@ -20,7 +20,6 @@ public class PrivMessageParser implements Parser {
             return null;
         }
         result[3] = result[3].substring(1);
-        System.out.println(Arrays.toString(result));
         return new PrivMessage(result[0], result[2], result[3], handler);
         // todo: aufteilen des splits und dann nachricht erstellen.
     }

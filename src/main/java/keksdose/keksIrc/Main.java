@@ -13,7 +13,7 @@ public class Main {
         start.setCapHandler(true);
         start.setNickname("FWKIB|Test");
         start.addChannel("#kitinfo-botnet");
-        start.addChannel("#kitinfo");
+        // start.addChannel("#kitinfo");
         try {
             start.start();
         } catch (IOException e) {
@@ -21,7 +21,6 @@ public class Main {
 
             e.printStackTrace();
         }
-        System.out.println("fertig");
     }
 
 }
