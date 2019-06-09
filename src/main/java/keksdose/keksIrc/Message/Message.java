@@ -11,4 +11,10 @@ public interface Message {
 
     public abstract String answer(String Content);
 
+    public abstract String answerNoPrefix(String content);
+
+    public default String getNick() {
+        return "";
+    }
+
 }

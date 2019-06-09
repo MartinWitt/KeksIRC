@@ -1,12 +1,10 @@
 package keksdose.keksIrc.Network;
-// TODO für SSL and non SSL
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 public class Connector {
@@ -38,8 +36,7 @@ public class Connector {
     private void createNonSSLSocket(String host, int port) {
         try {
             socket = new Socket(host, port);
-        } catch (Exception e) {
-            // TODO: handle exception
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -48,8 +45,7 @@ public class Connector {
     private void createSSLSocket(String host, int port) {
         try {
             socket = SSLSocketFactory.getDefault().createSocket(host, port);
-        } catch (Exception e) {
-            // TODO: handle exception
+        } catch (IOException e) {
             e.printStackTrace();
 
         }

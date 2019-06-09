@@ -19,8 +19,11 @@ public class PrivMessageParser implements Parser {
         if (result.length < 4) {
             return null;
         }
-        result[3] = result[3].substring(1);
-        return new PrivMessage(result[0], result[2], result[3], handler);
+        String content = result[3].substring(1);
+        String channel = result[2]; // eigentlich auch NUtzer bei Whisper
+        String user = result[0].split("!", 2)[0].replaceFirst(":", "");
+        String hostname = result[0].split("@", 2).length == 2 ? result[0].split("@", 2)[1] : result[0];
+        return new PrivMessage(hostname, channel, content, handler, user);
         // todo: aufteilen des splits und dann nachricht erstellen.
     }
 

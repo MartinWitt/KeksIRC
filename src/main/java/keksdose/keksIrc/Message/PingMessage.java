@@ -39,4 +39,9 @@ public class PingMessage implements Message {
         return "PONG " + this.content + Strings.newLine.getContent();
     }
 
+    @Override
+    public String answerNoPrefix(String content) {
+        return "PONG " + this.content + Strings.newLine.getContent();
+    }
+
 }

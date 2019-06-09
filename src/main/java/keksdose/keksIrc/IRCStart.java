@@ -3,7 +3,7 @@ package keksdose.keksIrc;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import keksdose.keksIrc.Actions.Join;
@@ -25,6 +25,7 @@ public class IRCStart {
     private String hostname = "FWKIB";
     private String username = "FWKIB";
     private String nickname = "FWKIB";
+    private String host = "chat.freenode.net";
     private List<String> channel = new LinkedList<>();
     private String prefix = Strings.zwnbsp.getContent();
     private ArrayBlockingQueue<Message> list;
@@ -35,8 +36,6 @@ public class IRCStart {
 
     public void start() throws IOException {
         CapHandler cap = new CapHandler();
-        int port = 7000; // 6667 non ssl 7000 ssl
-        String host = "chat.freenode.net";
         Connector c = new Connector(useSSL);
         User u = new User(hostname, username, nickname);
         c.connect(host, port);
@@ -44,32 +43,29 @@ public class IRCStart {
         SocketHandler s = new SocketHandler(c, cap);
         System.out.println("created streams");
         MessageParser parser = new MessageParser(s);
-        s.sendMessage(Nick.NickAction(u.getNickname()));
-        s.sendMessage(UserHost.UserHost(u.getHostname(), u.getUsername()));
+        loginToServer(u, s);
         for (String var : channel) {
             s.sendMessage(Join.JoinAction(var));
         }
         // TODO MULTICHANNEL
-        while (true) {
-            Message m = parser.parserMessage(s.getNextMessage());
-            if (m == null) {
+        for (;;) {
+            Optional<Message> m = parser.parserMessage(s.getNextMessage());
+            if (!m.isPresent()) {
                 continue;
             }
-            if (m.getType().equals("PING")) {
-                s.sendMessage(m.answer(""));
+            Message message = m.get();
+            if (message.getType().equals("PING")) {
+                s.sendMessage(message.answer(""));
                 continue;
             }
-            list.add(m);
-            if (m.getType().equals("PRIVMSG")) {
-                if (m.getContent().startsWith("#echo") && m.getContent().length() > 5) {
-                    if (useCapHandler) {
-                        cap.waitForNext();
-                    }
-                    s.sendMessage(m.answer(m.getContent().substring(6)));
-                }
-            }
+            list.add(message);
 
         }
+    }
+
+    private void loginToServer(User u, SocketHandler s) {
+        s.sendMessage(Nick.NickAction(u.getNickname()));
+        s.sendMessage(UserHost.UserHost(u.getHostname(), u.getUsername()));
     }
 
     public boolean isUseSSL() {
@@ -140,47 +136,8 @@ public class IRCStart {
         this.nickname = nickname;
     }
 
-    public void addChannel(String channel) {
-        this.channel.add(channel);
-    }
-
-    public String getPrefix() {
-        return this.prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public void setCapHandler(boolean var) {
-        useCapHandler = var;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof IRCStart)) {
-            return false;
-        }
-        IRCStart iRCStart = (IRCStart) o;
-        return useSSL == iRCStart.useSSL && usePrefix == iRCStart.usePrefix && useCapHandler == iRCStart.useCapHandler
-                && port == iRCStart.port && Objects.equals(hostname, iRCStart.hostname)
-                && Objects.equals(username, iRCStart.username) && Objects.equals(nickname, iRCStart.nickname)
-                && Objects.equals(prefix, iRCStart.prefix);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(useSSL, usePrefix, useCapHandler, port, hostname, username, nickname, prefix);
-    }
-
-    @Override
-    public String toString() {
-        return "{" + " useSSL='" + isUseSSL() + "'" + ", usePrefix='" + isUsePrefix() + "'" + ", useCapHandler='"
-                + isUseCapHandler() + "'" + ", port='" + getPort() + "'" + ", hostname='" + getHostname() + "'"
-                + ", username='" + getUsername() + "'" + ", nickname='" + getNickname() + "'" + "'" + ", prefix='"
-                + getPrefix() + "'" + "}";
+    public void addChannel(String string) {
+        channel.add(string);
     }
 
 }

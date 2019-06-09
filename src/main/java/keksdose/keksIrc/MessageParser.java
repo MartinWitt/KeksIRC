@@ -1,5 +1,7 @@
 package keksdose.keksIrc;
 
+import java.util.Optional;
+
 import keksdose.keksIrc.Message.Message;
 import keksdose.keksIrc.Network.SocketHandler;
 import keksdose.keksIrc.Parser.Parser;
@@ -17,17 +19,16 @@ public class MessageParser {
         privParser = new PrivMessageParser(s);
     }
 
-    public Message parserMessage(String message) {
+    public Optional<Message> parserMessage(String message) {
 
         if (message.startsWith("PING")) {
-            return pingParser.parse(message);
+            return Optional.of(pingParser.parse(message));
 
         }
         if (message.contains("PRIVMSG")) {
-            Message m = privParser.parse(message);
-            return m;
+            return Optional.of(privParser.parse(message));
         }
-        return null;
+        return Optional.empty();
     }
 
 }

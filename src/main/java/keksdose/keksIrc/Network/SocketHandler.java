@@ -49,12 +49,12 @@ public class SocketHandler {
 
             @Override
             public void run() {
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
                     try {
                         String var = in.readLine();
                         messages.put(var);
                     } catch (IOException | InterruptedException e) {
-                        // TODO Auto-generated catch block
+                        Thread.currentThread().interrupt();
                         e.printStackTrace();
                     }
 
@@ -86,7 +86,7 @@ public class SocketHandler {
         try {
             return messages.take();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+            Thread.currentThread().interrupt();
             e.printStackTrace();
         }
         return "";
