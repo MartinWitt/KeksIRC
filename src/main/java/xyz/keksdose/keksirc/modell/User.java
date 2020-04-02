@@ -1,4 +1,4 @@
-package keksdose.keksIrc.Modell;
+package xyz.keksdose.keksirc.modell;
 
 import java.util.Objects;
 
@@ -56,8 +56,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "{" + " hostname='" + getHostname() + "'" + ", username='" + getUsername() + "'" + ", nickname='"
-                + getNickname() + "'" + "}";
+        return "{" + " hostname='" + getHostname() + "'" + ", username='" + getUsername() + "'"
+                + ", nickname='" + getNickname() + "'" + "}";
     }
 
 }

@@ -1,6 +1,6 @@
-package keksdose.keksIrc.Message;
+package xyz.keksdose.keksirc.message;
 
-import keksdose.keksIrc.Helper.Strings;
+import xyz.keksdose.keksirc.helper.Strings;
 
 public class PingMessage implements Message {
     private String hostname;
@@ -36,12 +36,12 @@ public class PingMessage implements Message {
 
     @Override
     public String answer(String content) {
-        return "PONG " + this.content + Strings.newLine.getContent();
+        return "PONG " + Strings.newLine.getContent();
     }
 
     @Override
     public String answerNoPrefix(String content) {
-        return "PONG " + this.content + Strings.newLine.getContent();
+        return answer(content);
     }
 
 }

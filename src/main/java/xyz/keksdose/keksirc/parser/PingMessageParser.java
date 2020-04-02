@@ -1,7 +1,7 @@
-package keksdose.keksIrc.Parser;
+package xyz.keksdose.keksirc.parser;
 
-import keksdose.keksIrc.Message.Message;
-import keksdose.keksIrc.Message.PingMessage;
+import xyz.keksdose.keksirc.message.Message;
+import xyz.keksdose.keksirc.message.PingMessage;
 
 public class PingMessageParser implements Parser {
 

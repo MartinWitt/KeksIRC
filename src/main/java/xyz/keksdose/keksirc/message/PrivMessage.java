@@ -1,23 +1,24 @@
-package keksdose.keksIrc.Message;
+package xyz.keksdose.keksirc.message;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import keksdose.keksIrc.Helper.Strings;
-import keksdose.keksIrc.Network.SocketHandler;
+import xyz.keksdose.keksirc.helper.Strings;
+import xyz.keksdose.keksirc.network.SocketHandler;
 
 public class PrivMessage implements Message {
 
     private String nick;
     private String hostName;
-    private String ip; // TODO: das ist locker was anders
     private String channel;
     private String content;
 
     private String type = "PRIVMSG";
     private SocketHandler handler;
 
-    public PrivMessage(String hostname, String channel, String content, SocketHandler handler, String nick) {
+    public PrivMessage(String hostname, String channel, String content, SocketHandler handler,
+            String nick) {
         this.hostName = hostname;
         this.channel = channel;
         this.content = content;
@@ -52,16 +53,7 @@ public class PrivMessage implements Message {
         return this.nick;
     }
 
-    public String getIp() {
-        return this.ip;
-    }
 
-    @Override
-    public String toString() {
-        return "{" + " nick='" + getNick() + "'" + ", hostname='" + getHostName() + "'" + ", ip='" + getIp() + "'"
-                + ", channel='" + getChannel() + "'" + ", content='" + getContent() + "'" + ", type='" + getType() + "'"
-                + "'" + "}";
-    }
 
     public String answer(String content) {
         String[] splitted = content.split("\n");
@@ -73,8 +65,13 @@ public class PrivMessage implements Message {
                 parts.add(var.substring(i, Math.min(length, i + 510)));
             }
             for (String value : parts) {
-                String s = ("PRIVMSG " + this.getChannel() + " :" + value + Strings.newLine.getContent());
-                handler.sendMessage(s);
+                String s = ("PRIVMSG " + this.getChannel() + " :" + value
+                        + Strings.newLine.getContent());
+                try {
+                    handler.sendMessage(s);
+                } catch (IOException e) {
+                    System.err.println("could not send message");
+                }
             }
 
         }
@@ -87,15 +84,31 @@ public class PrivMessage implements Message {
             List<String> parts = new ArrayList<>();
 
             int length = var.length();
-            for (int i = 0; i < length; i += 510) {
-                parts.add(var.substring(i, Math.min(length, i + 510)));
+            for (int i = 0; i < length; i += 450) {
+                parts.add(var.substring(i, Math.min(length, i + 450)));
             }
             for (String value : parts) {
-                String s = ("PRIVMSG " + this.getChannel() + " :" + value + Strings.newLine.getContent());
-                handler.sendMessage(s);
+                String s = ("PRIVMSG " + this.getChannel() + " :" + value
+                        + Strings.newLine.getContent());
+                try {
+                    handler.sendMessage(s);
+                } catch (IOException e) {
+                    System.err.println("could not send message");
+                }
             }
-
         }
         return "";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+
+    @Override
+    public String toString() {
+        return "PrivMessage [channel=" + channel + ", content=" + content + ", hostName=" + hostName
+                + ", nick=" + nick + "]";
     }
 }

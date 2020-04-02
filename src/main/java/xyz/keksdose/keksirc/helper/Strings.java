@@ -1,4 +1,4 @@
-package keksdose.keksIrc.Helper;
+package xyz.keksdose.keksirc.helper;
 
 public enum Strings {
 

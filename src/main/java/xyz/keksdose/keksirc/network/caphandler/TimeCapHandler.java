@@ -1,20 +1,20 @@
-package keksdose.keksIrc.Network;
+package xyz.keksdose.keksirc.network.caphandler;
 
 import java.util.concurrent.TimeUnit;
 
-public class CapHandler {
-    public CapHandler() {
+public class TimeCapHandler implements CapHandler {
+    public TimeCapHandler() {
         timeLastMessage = System.currentTimeMillis();
     }
 
-    long timeLastMessage = 0;
+    private long timeLastMessage = 0;
 
-    public void waitForNext() {
+    public void waitMessageCap() {
         try {
             TimeUnit.MILLISECONDS.sleep(timeLastMessage + 200 - System.currentTimeMillis());
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // if interrupted just try again
+            waitMessageCap();
         }
         timeLastMessage = System.currentTimeMillis();
     }

@@ -1,4 +1,4 @@
-package keksdose.keksIrc.Modell;
+package xyz.keksdose.keksirc.modell;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

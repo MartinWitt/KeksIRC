@@ -7,11 +7,9 @@
 
 plugins {
     id 'java'
-    id 'application'
     id 'java-library'
-
-    
-
+    id 'maven'
+    id 'maven-publish'
     
 }
 tasks.withType(JavaCompile) {
@@ -23,8 +21,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-targetCompatibility = '10'
-sourceCompatibility = '10'
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = 'xyz.keksdose.keksirc'
+                artifactId = 'keksirc'
+                version = '1'
+
+                from components.java
+            }
+        }
+    }
+
+targetCompatibility = '12'
+sourceCompatibility = '12'
 
 
 repositories {
@@ -37,7 +47,7 @@ repositories {
     }
 }
 
-
+version = 0.1
 
 
 
@@ -47,15 +57,11 @@ test {
         // standard out or error is shown
         // in Gradle output.
         showStandardStreams = true
-     }
+        useJUnitPlatform()
+    }
 }
 
-
-mainClassName = 'keksdose.keksIrc.Main'
 jar {
-    manifest {
-        attributes 'Main-Class' : 'keksdose.keksIrc.Main'
-    }
     doFirst {
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
     }

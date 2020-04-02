@@ -1,20 +1,18 @@
-package keksdose.keksIrc;
+package xyz.keksdose.keksirc;
 
 import java.util.Optional;
 
-import keksdose.keksIrc.Message.Message;
-import keksdose.keksIrc.Network.SocketHandler;
-import keksdose.keksIrc.Parser.Parser;
-import keksdose.keksIrc.Parser.PingMessageParser;
-import keksdose.keksIrc.Parser.PrivMessageParser;
+import xyz.keksdose.keksirc.message.Message;
+import xyz.keksdose.keksirc.network.SocketHandler;
+import xyz.keksdose.keksirc.parser.Parser;
+import xyz.keksdose.keksirc.parser.PingMessageParser;
+import xyz.keksdose.keksirc.parser.PrivMessageParser;
 
 public class MessageParser {
     private Parser privParser;
     private Parser pingParser;
-    private SocketHandler s;
 
     public MessageParser(SocketHandler s) {
-        this.s = s;
         pingParser = new PingMessageParser();
         privParser = new PrivMessageParser(s);
     }

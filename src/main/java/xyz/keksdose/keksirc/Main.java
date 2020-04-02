@@ -1,9 +1,9 @@
-package keksdose.keksIrc;
+package xyz.keksdose.keksirc;
 
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import keksdose.keksIrc.Message.Message;
+import xyz.keksdose.keksirc.message.Message;
 
 public class Main {
 
@@ -11,8 +11,9 @@ public class Main {
         ArrayBlockingQueue<Message> list = new ArrayBlockingQueue<>(100);
         var start = new IRCStart(list);
         start.setUseCapHandler(true);
-        start.setNickname("FWKIB|Test");
-        start.addChannel("#kitinfo-botnet");
+        IRCStart.setNickname("FWKIB|Test");
+        start.addChannel("##fwkib");
+
         // start.addChannel("#kitinfo");
         try {
             start.start();

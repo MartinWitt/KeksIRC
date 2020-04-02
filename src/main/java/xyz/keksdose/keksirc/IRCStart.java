@@ -1,20 +1,18 @@
-package keksdose.keksIrc;
+package xyz.keksdose.keksirc;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import keksdose.keksIrc.Actions.Join;
-import keksdose.keksIrc.Actions.Nick;
-import keksdose.keksIrc.Actions.UserHost;
-import keksdose.keksIrc.Helper.Strings;
-import keksdose.keksIrc.Message.Message;
-import keksdose.keksIrc.Modell.User;
-import keksdose.keksIrc.Network.CapHandler;
-import keksdose.keksIrc.Network.Connector;
-import keksdose.keksIrc.Network.SocketHandler;
+import xyz.keksdose.keksirc.action.Actions;
+import xyz.keksdose.keksirc.helper.Strings;
+import xyz.keksdose.keksirc.message.Message;
+import xyz.keksdose.keksirc.modell.User;
+import xyz.keksdose.keksirc.network.Connector;
+import xyz.keksdose.keksirc.network.SocketHandler;
+import xyz.keksdose.keksirc.network.caphandler.CapHandler;
+import xyz.keksdose.keksirc.network.caphandler.TimeCapHandler;
 
 public class IRCStart {
 
@@ -22,12 +20,11 @@ public class IRCStart {
     private boolean usePrefix = false;
     private boolean useCapHandler = true;
     private int port = 7000;
-    private String hostname = "FWKIB";
-    private String username = "FWKIB";
-    private String nickname = "FWKIB";
+    private static String hostname = "FWKIB";
+    private static String username = "FWKIB";
+    private static String nickname = "FWKIB";
     private String host = "chat.freenode.net";
     private List<String> channel = new LinkedList<>();
-    private String prefix = Strings.zwnbsp.getContent();
     private ArrayBlockingQueue<Message> list;
 
     public IRCStart(ArrayBlockingQueue<Message> container) {
@@ -35,17 +32,18 @@ public class IRCStart {
     }
 
     public void start() throws IOException {
-        CapHandler cap = new CapHandler();
-        Connector c = new Connector(useSSL);
+        CapHandler cap = new TimeCapHandler();
+        Connector c = Connector.connectorWithSSL();
         User u = new User(hostname, username, nickname);
         c.connect(host, port);
         System.out.println("connected with socket");
-        SocketHandler s = new SocketHandler(c, cap);
+        SocketHandler s = SocketHandler.socketHandlerWithCapHandler(c, cap);
+        s.startMessageReading();
         System.out.println("created streams");
         MessageParser parser = new MessageParser(s);
         loginToServer(u, s);
         for (String var : channel) {
-            s.sendMessage(Join.JoinAction(var));
+            s.sendMessage(Actions.joinAction(var));
         }
         // TODO MULTICHANNEL
         for (;;) {
@@ -58,14 +56,20 @@ public class IRCStart {
                 s.sendMessage(message.answer(""));
                 continue;
             }
+            // message.answer(Character.toString(29) + "die ist ein test" + Character.toString(29));
             list.add(message);
 
         }
     }
 
     private void loginToServer(User u, SocketHandler s) {
-        s.sendMessage(Nick.NickAction(u.getNickname()));
-        s.sendMessage(UserHost.UserHost(u.getHostname(), u.getUsername()));
+        try {
+            s.sendMessage(Actions.nickAction(u.getNickname()));
+            s.sendMessage(Actions.userHostAction(u.getHostname(), u.getUsername()));
+        } catch (IOException e) {
+            System.err.println("could not connect to given socket with given user");
+        }
+
     }
 
     public boolean isUseSSL() {
@@ -112,32 +116,53 @@ public class IRCStart {
         this.port = port;
     }
 
-    public String getHostname() {
-        return this.hostname;
+    /**
+     * @return the hostname
+     */
+    public static String getHostname() {
+        return hostname;
     }
 
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
+    /**
+     * @param hostname the hostname to set
+     */
+    public static void setHostname(String hostname) {
+        IRCStart.hostname = hostname;
     }
 
-    public String getUsername() {
-        return this.username;
+    /**
+     * @return the username
+     */
+    public static String getUsername() {
+        return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    /**
+     * @param username the username to set
+     */
+    public static void setUsername(String username) {
+        IRCStart.username = username;
     }
 
-    public String getNickname() {
-        return this.nickname;
+    /**
+     * @return the nickname
+     */
+    public static String getNickname() {
+        return nickname;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    /**
+     * @param nickname the nickname to set
+     */
+    public static void setNickname(String nickname) {
+        IRCStart.nickname = nickname;
     }
 
     public void addChannel(String string) {
         channel.add(string);
     }
 
+    public static boolean isUserName(String nick) {
+        return nickname.equals(nick);
+    }
 }

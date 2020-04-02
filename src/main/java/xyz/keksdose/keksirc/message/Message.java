@@ -1,4 +1,4 @@
-package keksdose.keksIrc.Message;
+package xyz.keksdose.keksirc.message;
 
 public interface Message {
     public abstract String getHostName();
